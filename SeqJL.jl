@@ -23,7 +23,7 @@ Base.reverse!(x::Seq) = (reverse!(x.data); x)
 reverse_complement!(x::Seq) = reverse!(complement!(x))
 Base.length(x::Seq) = length(x.data)
 Base.eachindex(x::Seq) = eachindex(x.data)
-Base.String(x::Seq) = String(copy(x.data))
+Base.print(io::IO, x::Seq) = write(io, x.data)
 
 function Base.getindex(x::Seq, i::Int)
    @boundscheck checkbounds(x.data, i)
