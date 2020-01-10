@@ -52,7 +52,7 @@ end
 
 kmers(s::Seq, ::Val{K}) where K = KmerIterator{K}(s)
 Base.IteratorEltype(::Type{KmerIterator{K}}) where K = Base.HasEltype()
-Base.eltype(::Type{KmerIterator{K}}) where K = Tuple{Int, Kmer{K}}
+Base.eltype(::Type{KmerIterator{K}}) where K = Kmer{K}
 
 const KMER_LUT = let
    bytes = fill(0xff, 256)
@@ -63,23 +63,22 @@ const KMER_LUT = let
    Tuple(bytes)
 end
 
-function Base.iterate(x::KmerIterator{K}, (pos, kmer, filled)=(1, typemin(UInt), 0)) where K
+function Base.iterate(x::KmerIterator{K}, (pos, kmer, filled)=(1, zero(UInt), 0)) where K
    @inbounds while pos ≤ length(x.seq.data)
-      filled += 1
       byte = x.seq.data[pos]
+      pos += 1
+      filled += 1
       val = KMER_LUT[byte + 1]
       kmer = kmer << 2 | val
       if val == 0xff
          filled = 0
-      end
-      pos += 1
-      if filled == K
-         return ((pos-K, Kmer{K}(kmer & mask(K))), (pos, kmer, min(K-1, filled)))
+      elseif filled == K
+         return (Kmer{K}(kmer & mask(K)), (pos, kmer, min(K-1, filled)))
       end
    end
    return nothing
 end
 
-export Seq, Kmer, reverse_complement, reverse_complement!, kmers
+export Seq, reverse_complement, reverse_complement!, kmers
 
 end # module

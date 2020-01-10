@@ -6,7 +6,7 @@ function cpg(seq)
    ncpg = 0
    longest = 0
    shortest = typemax(Int)
-   @inbounds for i in eachindex(seq.data)
+   @inbounds for i in eachindex(seq)
       base = seq[i]
       iscpg = ifelse(base == DNA_C, lastbase == DNA_G, ifelse(base == DNA_G, lastbase == DNA_C, false))
       if iscpg

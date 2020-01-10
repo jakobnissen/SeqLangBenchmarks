@@ -3,13 +3,7 @@ push!(LOAD_PATH, dir)
 
 using SeqJL
 
-function process(s)
-   length(s)
-end
-
-function is_sym(k)
-   return k == reverse_complement(k)
-end
+is_sym(k) = k == reverse_complement(k)
 
 function main(arg)
    f = open(arg)
@@ -17,9 +11,9 @@ function main(arg)
    for l in eachline(f)
       s = Seq(l)
       k = 16
-      for (_, codon) in kmers(s, Val(k))
-         t1 += process(codon)
-         t3 += is_sym(codon)
+      for kmer in kmers(s, Val(k))
+         t1 += length(kmer)
+         t3 += is_sym(kmer)
          t2 += 1
       end
    end
