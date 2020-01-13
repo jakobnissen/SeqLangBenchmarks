@@ -8,6 +8,7 @@ function main(arg)
            total += length(seq)
            println(seq)
         end
+        close(f)
         println("$total")
 end
 
