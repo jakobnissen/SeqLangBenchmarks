@@ -4,6 +4,7 @@ const RC_LUT = let
    bytes = fill(UInt8('N'), 256)
    @inbounds for (i, j) in zip("-ACMGRSVTWYHKDBN", "-TGKCYSBAWRDMHVN")
       bytes[UInt8(i) + 1] = UInt8(j)
+      bytes[UInt8(lowercase(i)) + 1] = UInt8(j)
    end
    Tuple(bytes)
 end
@@ -13,14 +14,18 @@ struct Seq
 end
 Seq(s::String) = Seq(Vector{UInt8}(s))
 
-function complement!(x::Seq)
-   @inbounds for i in eachindex(x.data)
-      x.data[i] = RC_LUT[x.data[i] + 1]
+function reverse_complement!(x::Seq)
+   j = length(x)
+   i = 1
+   @inbounds while i < j
+      x.data[i], x.data[j] = RC_LUT[x.data[j]+1], RC_LUT[x.data[i]+1]
+      j -= 1
+      i += 1
    end
-   x
+   isodd(length(x)) && @inbounds (x.data[i] = RC_LUT[x.data[i] + 1])
+   return x
 end
-Base.reverse!(x::Seq) = (reverse!(x.data); x)
-reverse_complement!(x::Seq) = reverse!(complement!(x))
+
 Base.length(x::Seq) = length(x.data)
 Base.eachindex(x::Seq) = eachindex(x.data)
 Base.print(io::IO, x::Seq) = write(io, x.data)
