@@ -46,6 +46,7 @@ function reverse(m::Kmer{K}) where K
    x = bswap(x)
    return Kmer{K}(x >> unsigned(64 - 2K))
 end
+
 complement(x::Kmer) = typeof(x)(~x.x)
 reverse_complement(x::Kmer) = reverse(complement(x))
 Base.length(::Kmer{K}) where K = K
@@ -60,7 +61,7 @@ Base.IteratorEltype(::Type{KmerIterator{K}}) where K = Base.HasEltype()
 Base.eltype(::Type{KmerIterator{K}}) where K = Kmer{K}
 
 const KMER_LUT = let
-   bytes = fill(0xff, 256)
+   bytes = fill(0x0f, 256)
    @inbounds for (char, val) in zip("ACGT", [0, 1, 2, 3])
       bytes[UInt8(char)+1] = val
       bytes[UInt8(lowercase(char))+1] = val
@@ -75,7 +76,7 @@ function Base.iterate(x::KmerIterator{K}, (pos, kmer, filled)=(1, zero(UInt), 0)
       filled += 1
       val = KMER_LUT[byte + 1]
       kmer = kmer << 2 | val
-      if val == 0xff
+      if val == 0x0f
          filled = 0
       elseif filled == K
          return (Kmer{K}(kmer & mask(K)), (pos, kmer, min(K-1, filled)))
@@ -85,5 +86,4 @@ function Base.iterate(x::KmerIterator{K}, (pos, kmer, filled)=(1, zero(UInt), 0)
 end
 
 export Seq, reverse_complement, reverse_complement!, kmers
-
 end # module
