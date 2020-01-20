@@ -1,12 +1,12 @@
 # Seq language benchmarks
 
-This is a code repository for an (as of 2019-01-20, upcoming) blog post about the Seq language versus BioJulia.
+This is a code repository for an (as of 2019-01-20), upcoming blog post about the Seq language versus BioJulia.
 
 ### Description of files
-`\*.bio.id.jl`: Idiomatic code for BioSequences v1.1 benchmark
-`\*.bio.new.jl`: Idiomatic code for BioSequences v2.1 benchmark
-`\*.bio.simple.jl`: Code for SeqJL benchmark
-`SeqJL.jl`: Entire SeqJL module.
+* `\*.bio.id.jl`: Idiomatic code for BioSequences v1.1 benchmark
+* `\*.bio.new.jl`: Idiomatic code for BioSequences v2.1 benchmark
+* `\*.bio.simple.jl`: Code for SeqJL benchmark
+* `SeqJL.jl`: Entire SeqJL module.
 
 ### Benchmarks
 * `Seq BioSequences`: The [BioJulia code used by the Seq authors in their paper.](https://github.com/seq-lang/benchmarks/tree/master/paper/idiomatic)
