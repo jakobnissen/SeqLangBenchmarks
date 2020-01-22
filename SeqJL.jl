@@ -12,7 +12,14 @@ end
 struct Seq
    data::Vector{UInt8}
 end
-Seq(s::String) = Seq(Vector{UInt8}(s))
+Seq() = Seq(UInt8[])
+
+function Base.copy!(seq::Seq, str::String)
+   ncu = ncodeunits(str) % UInt
+   length(seq) == ncu || resize!(seq.data, ncu)
+   unsafe_copyto!(pointer(seq.data), pointer(str), ncu)
+   return seq
+end
 
 function reverse_complement!(x::Seq)
    j = length(x)
